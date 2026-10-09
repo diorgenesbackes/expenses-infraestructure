@@ -1,6 +1,6 @@
 # Infraestrutura local
 
-Este diretório reúne o Compose e a configuração necessária para executar o Expenses
+Este diretório reúne o Compose, os scripts operacionais e a configuração necessária para executar o Expenses
 no Docker Desktop. Os Dockerfiles ficam em `expenses-service/` e `expenses-ui/`;
 as migrations permanecem em `expenses-liquibase/`.
 
@@ -34,6 +34,20 @@ cp -n .env.example .env
 O `.env` é ignorado pelo Git. O `.env.example` é o modelo versionado. O Compose
 carrega o `.env` deste diretório; a API recebe a conexão por variável de ambiente.
 User Secrets da máquina e o arquivo privado do Liquibase têm configuração própria.
+
+## Scripts operacionais
+
+Execute a partir de `expenses-infrastructure/`, com Python 3:
+
+| Comando | Finalidade |
+| --- | --- |
+| `python3 scripts/configure-cognito-secret.py` | Solicitar o Client Secret em terminal interativo e salvar nos User Secrets da API sem exibir o valor. |
+| `python3 scripts/configure-session-secret.py` | Gerar a chave HMAC nos User Secrets da API, preservando uma chave existente. |
+| `python3 scripts/test-postgres.py` | Encaminhar para as integrações locais em `expenses-tests/scripts/integration.py`. |
+
+Os scripts de configuração exigem o SDK .NET e localizam `expenses-service/Expenses.Api`
+a partir do próprio arquivo. O teste PostgreSQL requer os pré-requisitos descritos
+no [guia de testes](../expenses-tests/README.md) e utiliza um banco descartável.
 
 ## Iniciar e conferir os serviços
 
